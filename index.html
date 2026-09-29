@@ -137,6 +137,24 @@ body.holo .fc{overflow:hidden}body.holo .fc:before{content:'';position:absolute;
 .mf u{position:absolute;right:3px;bottom:3px;width:14px;height:14px;background-size:100% 100%;image-rendering:pixelated}
 .mb{background-color:var(--b2,#4b1f66);background-image:linear-gradient(45deg,var(--b1,#8a3aa0) 25%,transparent 25%,transparent 75%,var(--b1,#8a3aa0) 75%);background-size:8px 8px}
 .pspin{display:flex;gap:8px}.pspin .mb{width:44px;height:62px;animation:spin2 .6s linear infinite}@keyframes spin2{50%{transform:rotateY(180deg) scale(1.25)}}
+
+.sv{width:min(560px,90vw);height:120px;background:#0b1f17;color:var(--gold);border:4px solid #000;box-shadow:inset 0 0 0 2px #2c6a4d;font:9px/1.6 monospace;padding:8px;word-break:break-all;resize:none}
+#ov:has(.pl){overflow:hidden}
+.pl{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;min-width:min(720px,94vw);min-height:60vh}
+.rays{position:absolute;left:50%;top:50%;width:220vmax;height:220vmax;margin:-110vmax 0 0 -110vmax;background:repeating-conic-gradient(var(--rc,#f0c040) 0 6deg,transparent 6deg 18deg);opacity:0;z-index:-1;animation:spin 16s linear infinite;transition:opacity 1s}.rays.on{opacity:.2}
+.pt{font-size:18px;color:var(--gold);text-shadow:3px 3px 0 #000;letter-spacing:2px;min-height:26px}
+.pdeck{position:relative;width:76px;height:106px;margin:40px 0}
+.pcb{position:absolute;inset:0;border:4px solid #000;background-color:var(--b2,#4b1f66);background-image:linear-gradient(45deg,var(--b1,#8a3aa0) 25%,transparent 25%,transparent 75%,var(--b1,#8a3aa0) 75%);background-size:10px 10px;box-shadow:inset 0 0 0 3px var(--ivory),4px 6px 0 #000;animation:shuf .55s ease-in-out infinite;animation-delay:calc(var(--k)*-.06s)}
+@keyframes shuf{0%,100%{transform:none}25%{transform:translate(-80px,-14px) rotate(-16deg)}50%{transform:scale(1.08)}75%{transform:translate(80px,-14px) rotate(16deg)}}
+.pdeck.fast .pcb{animation-duration:.2s}.pdeck.slam{animation:slam .45s ease-in forwards}@keyframes slam{40%{transform:scale(1.7)}to{transform:scale(0) rotate(180deg);opacity:0}}
+.prow{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}.rw{display:flex;flex-direction:column;align-items:center;width:120px}
+.rc{position:relative;width:112px;height:160px;perspective:700px;animation:deal .5s var(--sp) backwards;animation-delay:calc(var(--k)*.1s);transition:box-shadow .2s}@keyframes deal{from{transform:translateY(-240px) rotate(-40deg) scale(.2);opacity:0}}
+.rc.hint,.rc.flip{box-shadow:0 0 24px 6px var(--gc)}
+.ri{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s var(--sp)}.rc.flip .ri{transform:rotateY(180deg)}
+.rb,.rf{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:4px solid #000}
+.rb{background-color:var(--b2,#4b1f66);background-image:linear-gradient(45deg,var(--b1,#8a3aa0) 25%,transparent 25%,transparent 75%,var(--b1,#8a3aa0) 75%);background-size:12px 12px;box-shadow:inset 0 0 0 4px var(--gc,var(--ivory))}
+.rf{transform:rotateY(180deg);font-size:44px;line-height:1}.rf b{position:absolute;left:10px;top:10px;font-weight:400}.rf u{position:absolute;right:10px;bottom:10px;width:44px;height:44px;background-size:100% 100%;image-rendering:pixelated}
+.cap{font-size:8px;line-height:1.7;margin-top:10px;opacity:0;transition:opacity .4s}.rw.on .cap{opacity:1}.cap b{font-weight:400}.cap .stamp{color:var(--gold);display:inline-block}.rw.on .stamp{animation:ko .5s var(--sp) backwards}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 </style>
 </head>
@@ -222,11 +240,23 @@ D.p1.onclick=()=>pull(1);D.p5.onclick=()=>pull(5);
 D.shop.querySelectorAll('.cs:not(.lk)').forEach(e=>e.onclick=()=>{prog.q=+e.dataset.i;save();applyTheme();snd(660,.1,'square',.05);shopUI()});statsUI()}
 async function pull(n){const c=COST*n;if(prog.c<c)return;prog.c-=c;const res=[];
 for(let k=0;k<n;k++){const x=Math.random()*100,z=x<60?0:x<88?1:x<97?2:3,pool=TH.map((t,i)=>i).filter(i=>TH[i].z==z),i=pool[Math.random()*pool.length|0],dup=!!prog.o[i];if(dup)prog.c+=REF[z];else prog.o[i]=1;res.push({i,dup,z})}
-save();ov(`<h1>PULLING...</h1><div class="pspin">${'<i class="mb"></i>'.repeat(n)}</div>`);[300,400,500,650].forEach((f,k)=>setTimeout(()=>snd(f,.1,'square',.05),k*220));
-await sleep(1100);const best=Math.max(...res.map(r=>r.z));
-ov(`<h1 style="color:${RC[best]}">${['YOU GOT:','NICE PULL!','EPIC!','LEGENDARY!!'][best]}</h1><div class="row">${res.map(r=>`<div class="cs r${r.z}" style="--i:0;width:130px">${prv(TH[r.i])}<b>${TH[r.i].n}</b><br><span style="color:${RC[r.z]}">${RAR[r.z]}</span><br>${r.dup?'DUP +'+REF[r.z]+' COINS':'NEW!'}</div>`).join('')}</div><button id="pc">OK</button>`);
-if(best>1){flash(RC[best],.5);confetti();[784,988,1175,1568].forEach((f,k)=>setTimeout(()=>snd(f,.15,'square',.06),k*100))}
-D.pc.onclick=()=>{D.ov.classList.remove('on');shopUI()}}
+save();const best=Math.max(...res.map(r=>r.z));let skip=false;const wt=ms=>sleep(skip?25:ms),shk=()=>D.ov.animate([{transform:'translate(0,0)'},{transform:'translate(-7px,5px)'},{transform:'translate(7px,-5px)'},{transform:'translate(-4px,3px)'},{transform:'none'}],{duration:300});
+ov(`<div class="pl" id="pl"><div class="rays" id="rays"></div><div class="pt" id="pt">SHUFFLING</div><div class="pdeck" id="pdk">${[...Array(9)].map((_,k)=>`<i class="pcb" style="--k:${k}"></i>`).join('')}</div><div class="prow" id="prow"></div><div id="pbt"><button class="s" id="psk">SKIP</button></div></div>`);
+D.pl.onclick=()=>{skip=true};D.rays.style.setProperty('--rc',RC[best]);D.rays.classList.add('on');
+let q=0;const iv=setInterval(()=>{snd(180+q*22,.06,'square',.04);q++},90);
+await wt(900);D.pdk.classList.add('fast');put(D.pt,'CUTTING THE DECK');await wt(800);clearInterval(iv);
+D.pdk.classList.add('slam');snd(120,.3,'sawtooth',.08,-60);shk();await wt(450);D.pdk.remove();put(D.pt,'FLIP THEM!');
+D.prow.innerHTML=res.map((r,k)=>{const t=TH[r.i];return `<div class="rw" style="--gc:${RC[r.z]}"><div class="rc" style="--k:${k}"><div class="ri"><div class="rb"></div><div class="rf" style="background:${t.f};box-shadow:inset 0 0 0 4px ${t.i};color:${t.i}"><b>A</b><u style="background-image:${spr(1,t.r)}"></u></div></div></div><div class="cap"><b>${t.n}</b><br><span style="color:${RC[r.z]}">${RAR[r.z]}</span><br><span class="stamp">${r.dup?'DUP +'+REF[r.z]:'NEW!'}</span></div></div>`}).join('');
+await wt(700);
+for(let k=0;k<res.length;k++){const r=res[k],w=D.prow.children[k],rc=w.firstChild,b=rc.getBoundingClientRect(),x=b.left+b.width/2,y=b.top+b.height/2;
+rc.classList.add('hint');for(const col of [...RC,RC[r.z]]){w.style.setProperty('--gc',col);snd(300+RC.indexOf(col)*120,.05,'square',.04);await wt(80)}
+await wt(r.z*140);rc.classList.add('flip');w.classList.add('on');snd(500+r.z*180,.2,'square',.07,300);await wt(350);
+burst(x,y,[RC[r.z],'#fff',TH[r.i].f],20+r.z*15,6+r.z*2);
+if(r.z>1){flash(RC[r.z],.55);shk();[784,988,1175,1568].forEach((f,j)=>setTimeout(()=>snd(f,.15,'square',.06),j*90))}
+if(r.z==3){confetti();D.ov.classList.add('win')}
+await wt(r.z>1?700:350)}
+const pt=D.pt;put(pt,['YOU GOT:','NICE PULL!','EPIC PULL!','LEGENDARY!!'][best]);pt.style.color=RC[best];pt.animate([{transform:'scale(2)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:400});
+D.pbt.innerHTML='<button id="pc">OK</button>';D.pc.onclick=()=>{D.ov.classList.remove('on');shopUI()}}
 function hype(t){const r=t/target,w=r>=.4?['MASSIVE!','#ff5a3a']:r>=.25?['AMAZING!','#f0c040']:r>=.12?['NICE!','#5fd39a']:0;if(w){const[x,y]=ctr(D.bsp);float(x,y-115,w[0],w[1])}}
 const sv=(n,s=14)=>[0,1,2].map(i=>ic('star',s,i<n?'#f0c040':'#9aa0ad')).join('');
 const puth=(e,h)=>{if(e._h!==h||(h&&!e.firstChild)){e._h=h;e.innerHTML=h}};
@@ -405,11 +435,20 @@ function lose(why){live=false;busy=true;music(false);ui();shake();snd(220,.7,'sa
 
 D.play.onclick=play;D.dis.onclick=discard;D.mn.onclick=menu;
 D.sr.onclick=()=>sortH((a,b)=>b.r-a.r||a.s-b.s);D.ss.onclick=()=>sortH((a,b)=>a.s-b.s||b.r-a.r);
-D.rst.onclick=()=>{if(!confirm('Reset act progress? (Achievements are kept)'))return;prog=cleanProg({...prog,u:1,s:[]});save();menu()};
-D.ex.onclick=()=>{const c=btoa(JSON.stringify(prog));(navigator.clipboard?navigator.clipboard.writeText(c):Promise.reject()).then(()=>alert('Save code copied to clipboard!'),()=>prompt('Copy your save code:',c))};
-D.im.onclick=()=>{const c=prompt('Paste your save code:');if(!c)return;try{prog=cleanProg(JSON.parse(atob(c.trim())));save();menu()}catch(e){alert('That save code is not valid.')}};
+const encS=()=>{const j=JSON.stringify(prog);let x=0;for(const ch of j)x=(x*31+ch.charCodeAt(0))>>>0;return 'AR1-'+btoa(j)+'-'+x.toString(36)};
+const decS=t=>{t=String(t).trim().replace(/^["'`]+|["'`]+$/g,'');if(t[0]!='{')t=t.replace(/\s/g,'');let j;const m=t.match(/^AR1-([A-Za-z0-9+/=]+)-([a-z0-9]+)$/i);if(m){j=atob(m[1]);let x=0;for(const ch of j)x=(x*31+ch.charCodeAt(0))>>>0;if(x.toString(36)!==m[2].toLowerCase())throw 0}else j=t[0]=='{'?t:atob(t);const o=JSON.parse(j);if(!o||typeof o!='object'||!('u' in o))throw 0;return cleanProg(o)};
+function saveUI(mode){
+if(mode=='ex'){const c=encS();ov(`<h1>EXPORT SAVE</h1><div class="sub">COPY THIS CODE AND KEEP IT SAFE</div><textarea id="sv" class="sv" readonly>${c}</textarea><div id="sm" class="sub" style="color:var(--gold)"></div><div class="row"><button id="scp">COPY</button><button id="sx" class="s">CLOSE</button></div>`);
+const t=D.sv;t.onfocus=()=>t.select();setTimeout(()=>t.select(),60);
+D.scp.onclick=async()=>{let ok=0;try{await navigator.clipboard.writeText(c);ok=1}catch(e){}if(!ok){t.select();try{ok=document.execCommand('copy')}catch(e){}}put(D.sm,ok?'COPIED!':'PRESS CTRL+C TO COPY THE SELECTED CODE')}}
+else if(mode=='im'){ov(`<h1>IMPORT SAVE</h1><div class="sub">PASTE YOUR SAVE CODE</div><textarea id="sv" class="sv" placeholder="AR1-..."></textarea><div id="sm" class="sub" style="color:#ff9a6a"></div><div class="row"><button id="sld">LOAD</button><button id="sx" class="s">CANCEL</button></div>`);
+D.sld.onclick=()=>{try{prog=decS(D.sv.value)}catch(e){put(D.sm,'THAT CODE IS NOT VALID');return}save();applyTheme();D.ov.classList.remove('on');menu();snd(784,.15,'square',.06)}}
+else{ov(`<h1>RESET PROGRESS?</h1><div class="sub">ACT PROGRESS RESETS. COINS, STYLES AND TROPHIES ARE KEPT.</div><div class="row"><button id="syes">YES, RESET</button><button id="sx" class="s">CANCEL</button></div>`);
+D.syes.onclick=()=>{prog=cleanProg({...prog,u:1,s:[]});save();D.ov.classList.remove('on');menu()}}
+D.sx.onclick=()=>D.ov.classList.remove('on')}
+D.rst.onclick=()=>saveUI('rs');D.ex.onclick=()=>saveUI('ex');D.im.onclick=()=>saveUI('im');
 addEventListener('resize',()=>{size();upCW();layout()});
-addEventListener('keydown',e=>{if(e.key==' ')e.preventDefault();if(busy)return;if(e.key==' '||e.key=='Enter'){if(document.activeElement)document.activeElement.blur();play()}else if(e.key=='x'||e.key=='X'||e.key=='d'||e.key=='D')discard();else if(e.key>='1'&&e.key<='8'&&hand[e.key-1])toggle(hand[e.key-1])});
+addEventListener('keydown',e=>{if(e.key==' '&&!/TEXTAREA|INPUT/.test(e.target.tagName))e.preventDefault();if(busy)return;if(e.key==' '||e.key=='Enter'){if(document.activeElement)document.activeElement.blur();play()}else if(e.key=='x'||e.key=='X'||e.key=='d'||e.key=='D')discard();else if(e.key>='1'&&e.key<='8'&&hand[e.key-1])toggle(hand[e.key-1])});
 D.title.innerHTML=[...'ACE RUSH'].map((c,i)=>`<span style="--i:${i}">${c==' '?'&nbsp;':c}</span>`).join('');
 for(let i=0;i<10;i++){const f=document.createElement('i');f.className='fs';f.style.cssText=`left:${(i*83)%96}%;top:${(i*37)%88}%;animation-delay:-${i*.4}s;background-image:${spr(i%4,i%4==1||i%4==2?'#d23c3c':'#0b1f17')}`;D.menu.append(f)}
 D.tp.onclick=()=>tab(0);D.tsh.onclick=()=>tab(2);D.ta.onclick=()=>tab(1);D.suits.innerHTML=[0,1,2,3].map(i=>`<i class="hsu" style="--i:${i};background-image:${spr(i,i==1||i==2?'#d23c3c':'#f4ecd2')}"></i>`).join('');
