@@ -155,6 +155,13 @@ body.holo .fc{overflow:hidden}body.holo .fc:before{content:'';position:absolute;
 .rb{background-color:var(--b2,#4b1f66);background-image:linear-gradient(45deg,var(--b1,#8a3aa0) 25%,transparent 25%,transparent 75%,var(--b1,#8a3aa0) 75%);background-size:12px 12px;box-shadow:inset 0 0 0 4px var(--gc,var(--ivory))}
 .rf{transform:rotateY(180deg);font-size:44px;line-height:1}.rf b{position:absolute;left:10px;top:10px;font-weight:400}.rf u{position:absolute;right:10px;bottom:10px;width:44px;height:44px;background-size:100% 100%;image-rendering:pixelated}
 .cap{font-size:8px;line-height:1.7;margin-top:10px;opacity:0;transition:opacity .4s}.rw.on .cap{opacity:1}.cap b{font-weight:400}.cap .stamp{color:var(--gold);display:inline-block}.rw.on .stamp{animation:ko .5s var(--sp) backwards}
+
+.hub{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;width:min(900px,100%)}@media(max-width:700px){.hub{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 10px;text-align:center;background:linear-gradient(#1d6a4b,#124532);color:var(--ivory);border:4px solid #000;box-shadow:inset 0 0 0 3px #2c9a6a,0 8px 0 #000;font-size:11px;line-height:1.6;animation:drop .6s var(--sp) backwards;animation-delay:calc(var(--i)*.07s);transition:transform .2s var(--sp)}
+.tile:hover{transform:translateY(-6px) scale(1.03);box-shadow:inset 0 0 0 3px var(--gold),0 12px 0 #000}.tile span{font-size:7px;opacity:.85}.tile .ic{animation:bi 2s ease-in-out infinite}
+.tile.ev{background:linear-gradient(var(--ea,#7a1224),var(--eb,#3a0812));box-shadow:inset 0 0 0 3px var(--ec,#ff5a6a),0 8px 0 #000;animation:drop .6s var(--sp) backwards,pl 1.4s ease-in-out .7s infinite}
+#mb{margin-bottom:10px}.cs.r4{box-shadow:inset 0 0 0 3px #ff5a8a,0 6px 0 #000,0 0 18px #ff5a8aaa}
+.mb.pkb,body.pkb .deck,body.pkb .back,body.pkb .fcard,body.pkb .pcb,body.pkb .rb{background-color:var(--b2);background-image:var(--bimg);background-size:var(--bsz);background-position:0 0}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 </style>
 </head>
@@ -174,7 +181,7 @@ body.holo .fc{overflow:hidden}body.holo .fc:before{content:'';position:absolute;
  <div id="ctl"><button id="play">PLAY</button><button id="dis" class="s">DISCARD</button><button id="sr" class="s">RANK</button><button id="ss" class="s">SUIT</button><button id="mn" class="s">MENU</button><button id="mt" class="s">SND</button></div>
  <div id="keys">SPACE PLAY  -  X DISCARD  -  1-8 SELECT</div>
 </div>
-<div id="menu"><div id="suits"></div><h1 id="title"></h1><div class="sub">BEAT THE BOSS. BEAT THE CLOCK.</div><div id="tip" class="sub" style="color:var(--gold);min-height:14px"></div><button id="cont"></button><div class="row" id="stats"></div><div class="row"><button id="tp">PLAY</button><button id="ta" class="s">TROPHIES</button><button id="tsh" class="s">SHOP</button></div><div class="px pnl"><div id="mh">CHOOSE YOUR ACT</div><div class="grid" id="grid"></div><div class="grid ag" id="achv" style="display:none"></div><div id="shop" style="display:none"></div></div><div id="tstars" style="color:var(--gold)"></div><div class="row"><button id="ex" class="s">EXPORT SAVE</button><button id="im" class="s">IMPORT SAVE</button><button id="rst" class="s">RESET PROGRESS</button></div></div>
+<div id="menu"><div id="suits"></div><h1 id="title"></h1><div class="sub">BEAT THE BOSS. BEAT THE CLOCK.</div><div id="tip" class="sub" style="color:var(--gold);min-height:14px"></div><button id="cont"></button><div class="row" id="stats"></div><div id="hub" class="hub"></div><div class="px pnl" id="pnl" style="display:none"><button id="mb" class="s">&lt; BACK</button><div id="mh">CHOOSE YOUR ACT</div><div class="grid" id="grid"></div><div class="grid ag" id="achv" style="display:none"></div><div id="shop" style="display:none"></div><div id="spr" style="display:none"></div><div id="evp" style="display:none"></div><div id="svp" style="display:none"><div class="sub" style="margin-bottom:12px">MOVE OR BACK UP YOUR PROGRESS</div><div class="row"><button id="ex" class="s">EXPORT SAVE</button><button id="im" class="s">IMPORT SAVE</button><button id="rst" class="s">RESET PROGRESS</button></div></div></div><div id="tstars" style="color:var(--gold)"></div></div>
 <div id="ov"></div>
 <div id="start"><h1 id="stitle"></h1><div class="tag">BEAT THE BOSS. BEAT THE CLOCK.</div><button id="go">START</button><div class="hint">PRESS ENTER OR TAP</div></div>
 <script>
@@ -190,7 +197,7 @@ glass:['kkkkkkkkk','.kwwwwwk.','.kwnnnwk.','..kwnwk..','...knk...','..kwnwk..','
 coin:['..kkkkk..','.kgggggk.','kgggdgggk','kggdddggk','kgggdgggk','kgggdgggk','kgggdgggk','.kgggggk.','..kkkkk..'],
 lock:['..kkkkk..','.kdddddk.','.kd...dk.','.kd...dk.','kkkkkkkkk','kgggggggk','kgggkgggk','kgggkgggk','kkkkkkkkk'],
 skull:['.kkkkkkk.','kwwwwwwwk','kwwwwwwwk','kwkkwkkwk','kwkkwkkwk','.kwwkwwk.','..kwwwk..','..kwkwk..','...kkk...'],
-trophy:['kkkkkkkkk','kgwggggdk','kgwggggdk','.kgwggdk.','..kgggk..','...kgk...','...kgk...','..kdddk..','.kkkkkkk.']};
+pumpkin:['....k....','...knk...','.kkoookk.','koooooook','kokoookok','koooooook','kokkkkkok','.koooook.','..kkkkk..'],trophy:['kkkkkkkkk','kgwggggdk','kgwggggdk','.kgwggdk.','..kgggk..','...kgk...','...kgk...','..kdddk..','.kkkkkkk.']};
 const PAL={k:'#000',g:'#f0c040',d:'#a8801f',w:'#f4ecd2',r:'#d23c3c',o:'#ff7a2a',n:'#5fd39a',c:'currentColor'};
 const IC={};for(const n in PXI)IC[n]=PXI[n].map((r,y)=>[...r].map((v,x)=>PAL[v]?`<rect x="${x}" y="${y}" width="1" height="1" fill="${PAL[v]}"/>`:'').join('')).join('');
 const ic=(n,s=16,c)=>`<svg class="ic" viewBox="0 0 9 9" width="${s}" height="${s}" shape-rendering="crispEdges"${c?` style="color:${c}"`:''}>${IC[n]}</svg>`;
@@ -231,13 +238,13 @@ const TH=[
 {n:'HOLOGRAM',z:3,f:'#f0f4ff',i:'#2a1c5a',r:'#e0357a',b1:'#5be0ff',b2:'#b06bff',h:1}];
 const RAR=['COMMON','RARE','EPIC','LEGENDARY'],RC=['#9aa0ad','#4aa3ff','#b06bff','#f0c040'],REF=[15,30,60,120],COST=60,RK=['ROOKIE','HUSTLER','SHARK','HIGH ROLLER','LEGEND'],TIPS=['SPACE PLAYS, X DISCARDS','KEEP HEAT ALIVE FOR MORE MULT','DEBUFF ACTS PAY OFF WITH TROPHIES','PULL NEW CARD STYLES IN THE SHOP','PAIRS ARE CHEAP, FLUSHES ARE KING','BEAT BOSSES TO EARN COINS'];
 var CUR=TH[0],cg=0,TI=0;
-function applyTheme(){CUR=TH[prog.q]||TH[0];const st=document.documentElement.style;st.setProperty('--cf',CUR.f);st.setProperty('--ci',CUR.i);st.setProperty('--cr',CUR.r);st.setProperty('--b1',CUR.b1);st.setProperty('--b2',CUR.b2);document.body.classList.toggle('holo',!!CUR.h)}
-const prv=t=>`<div class="pv2"><i class="mf" style="background:${t.f};box-shadow:inset 0 0 0 3px ${t.i};color:${t.i}">A<u style="background-image:${spr(1,t.r)}"></u></i><i class="mb" style="--b1:${t.b1};--b2:${t.b2}"></i></div>`;
+function applyTheme(){CUR=TH.find((t,i)=>tk(i)==prog.q)||TH[0];const st=document.documentElement.style;st.setProperty('--cf',CUR.f);st.setProperty('--ci',CUR.i);st.setProperty('--cr',CUR.r);st.setProperty('--b1',CUR.b1);st.setProperty('--b2',CUR.b2);document.body.classList.toggle('holo',!!CUR.h);st.setProperty('--bimg',CUR.bk||'none');st.setProperty('--bsz',CUR.bs||'16px 16px');document.body.classList.toggle('pkb',!!CUR.bk)}
+const prv=t=>`<div class="pv2"><i class="mf" style="background:${t.f};box-shadow:inset 0 0 0 3px ${t.i};color:${t.i}">A<u style="background-image:${spr(1,t.r)}"></u></i><i class="mb${t.bk?' pkb':''}" style="--b1:${t.b1};--b2:${t.b2}${t.bk?`;--bimg:${t.bk};--bsz:${t.bs||'16px 16px'}`:''}"></i></div>`;
 function statsUI(){const ts=prog.s.reduce((a,b)=>a+(b||0),0),na=Object.keys(prog.a).length,T=[8,20,36,54],L=T.filter(v=>ts>=v).length,lo=L?T[L-1]:0,hi=T[L]||60;
 puth(D.stats,`<span class="pill">${ic('coin',14)} ${prog.c}</span><span class="pill">${ic('trophy',12)} ${na}/${ACH.length}</span><span class="pill">${ic('star',12,'#f0c040')} ${ts}/${ACTS.length*3}</span><span class="pill">${ic('skull',12)} ${prog.n.d} DEBUFF WINS</span><span class="pill">RANK: ${RK[L]}</span><div class="xp"><i style="width:${Math.min(100,(ts-lo)/(hi-lo)*100)}%"></i></div>`)}
-function shopUI(){D.shop.innerHTML=`<div class="row"><span class="pill">${ic('coin',14)} ${prog.c} COINS</span><button id="p1"${prog.c<COST?' disabled':''}>PULL x1 (${COST})</button><button id="p5"${prog.c<COST*5?' disabled':''}>PULL x5 (${COST*5})</button></div><div class="sub" style="margin:8px 0">TAP AN OWNED STYLE TO EQUIP - DUPLICATES REFUND COINS</div><div class="grid cg">${TH.map((t,i)=>`<div class="cs r${t.z}${prog.o[i]?'':' lk'}${prog.q==i?' eq':''}" data-i="${i}" style="--i:${i}">${prv(t)}<b>${prog.o[i]?t.n:'???'}</b><br><span style="color:${RC[t.z]}">${RAR[t.z]}</span>${prog.q==i?'<br>EQUIPPED':''}</div>`).join('')}</div>`;
+function shopUI(){D.shop.innerHTML=`<div class="row"><span class="pill">${ic('coin',14)} ${prog.c} COINS</span><button id="p1"${prog.c<COST?' disabled':''}>PULL x1 (${COST})</button><button id="p5"${prog.c<COST*5?' disabled':''}>PULL x5 (${COST*5})</button></div><div class="sub" style="margin:8px 0">TAP AN OWNED STYLE TO EQUIP - DUPLICATES REFUND COINS</div><div class="grid cg">${TH.map((t,i)=>`<div class="cs r${t.z}${prog.o[tk(i)]?'':' lk'}${prog.q==tk(i)?' eq':''}" data-i="${i}" style="--i:${i}">${prv(t)}<b>${prog.o[tk(i)]?t.n:'???'}</b><br><span style="color:${RC[t.z]}">${RAR[t.z]}</span>${prog.q==tk(i)?'<br>EQUIPPED':''}</div>`).join('')}</div>`;
 D.p1.onclick=()=>pull(1);D.p5.onclick=()=>pull(5);
-D.shop.querySelectorAll('.cs:not(.lk)').forEach(e=>e.onclick=()=>{prog.q=+e.dataset.i;save();applyTheme();snd(660,.1,'square',.05);shopUI()});statsUI()}
+D.shop.querySelectorAll('.cs:not(.lk)').forEach(e=>e.onclick=()=>{prog.q=tk(+e.dataset.i);save();applyTheme();snd(660,.1,'square',.05);shopUI()});statsUI()}
 async function pull(n){const c=COST*n;if(prog.c<c)return;prog.c-=c;const res=[];
 for(let k=0;k<n;k++){const x=Math.random()*100,z=x<60?0:x<88?1:x<97?2:3,pool=TH.map((t,i)=>i).filter(i=>TH[i].z==z),i=pool[Math.random()*pool.length|0],dup=!!prog.o[i];if(dup)prog.c+=REF[z];else prog.o[i]=1;res.push({i,dup,z})}
 save();const best=Math.max(...res.map(r=>r.z));let skip=false;const wt=ms=>sleep(skip?25:ms),shk=()=>D.ov.animate([{transform:'translate(0,0)'},{transform:'translate(-7px,5px)'},{transform:'translate(7px,-5px)'},{transform:'translate(-4px,3px)'},{transform:'none'}],{duration:300});
@@ -258,9 +265,49 @@ await wt(r.z>1?700:350)}
 const pt=D.pt;put(pt,['YOU GOT:','NICE PULL!','EPIC PULL!','LEGENDARY!!'][best]);pt.style.color=RC[best];pt.animate([{transform:'scale(2)',opacity:0},{transform:'scale(1)',opacity:1}],{duration:400});
 D.pbt.innerHTML='<button id="pc">OK</button>';D.pc.onclick=()=>{D.ov.classList.remove('on');shopUI()}}
 function hype(t){const r=t/target,w=r>=.4?['MASSIVE!','#ff5a3a']:r>=.25?['AMAZING!','#f0c040']:r>=.12?['NICE!','#5fd39a']:0;if(w){const[x,y]=ctr(D.bsp);float(x,y-115,w[0],w[1])}}
+/* ===== modes (Spire / Events) + plugin API. Drop-in files call AceRush.event(...) ===== */
+var MODE='camp',SP=null,EV=null,XD=1;
+RAR.push('LIMITED');RC.push('#ff5a8a');
+const tk=i=>TH[i].id||i;
+const AceRush=window.AceRush=window.AceRush||{};AceRush.events=[];
+AceRush.achievement=(id,icon,name,desc,stars,ev,fn)=>ACH.push([id,icon,name,desc,stars,ev,fn]);
+AceRush.event=e=>{try{if(!e||!e.id||!e.boss||!e.tiers)throw 'event needs id, boss, tiers';e.skins=e.skins||[];e._sk={};e.skins.forEach(k=>{const id='ev:'+e.id+':'+k.id;e._sk[k.id]=id;TH.push({...k,id,z:4,lim:1})});e._bi=BOSS.push([e.boss.name,e.boss.quote||'',e.boss.color||'#b0102a'])-1;AceRush.events.push(e);if(window._arReady)menu()}catch(x){console.warn('Ace Rush event error:',x)}};
+const evLeft=e=>(e.end?Date.parse(e.end):Infinity)-Date.now();
+const activeEv=()=>AceRush.events.find(e=>Date.now()>=(e.start?Date.parse(e.start):0)&&evLeft(e)>0)||null;
+const fmtT=ms=>{if(ms==Infinity)return'NO END DATE';const d=Math.floor(ms/864e5),h=Math.floor(ms/36e5)%24,m=Math.floor(ms/6e4)%60;return d>0?d+'D '+h+'H LEFT':h+'H '+m+'M LEFT'};
+AceRush.achievement('s10','flame','SPIRE CLIMBER','Reach Spire floor 10',3,'spire',c=>c.fl>=10);
+AceRush.achievement('s20','flame','SPIRE MASTER','Reach Spire floor 20',4,'spire',c=>c.fl>=20);
+AceRush.achievement('s30','flame','SPIRE LEGEND','Reach Spire floor 30',5,'spire',c=>c.fl>=30);
+function spire(){MODE='spire';SP={fl:1,K:{h:0,d:0,pc:0,m:0,t:0,b:0},earn:0};spFloor()}
+function spFloor(){const n=SP.fl,DB=[{nf:1,x:'Faces dead.'},{ns:Math.floor(n/5)%4,x:'One suit is dead.'},{tr:1.15,x:'Time drains 15% faster.'},{nb:1,x:'Hands give little time.'},{hl:.02,x:'Boss heals 2% each hand.'},{dm:-1,x:'-1 mult.'}],b=n%5==0,db=b?DB[(n/5-1)%DB.length]:{x:'Climb the spire.'};
+A={n:'FLOOR '+n,t:Math.round(120*Math.pow(1.22,n-1)/10)*10,h:5,d:3,s:44,db:+b,...db};act=(n-1)%20;K={...SP.K};startAct()}
+function evGo(e){MODE='event';EV=e;XD=1;const b=e.boss;A={n:b.name,t:b.hp,h:999,d:3,s:b.time||60,x:b.text||'No mercy.',db:1,...(b.mods||{})};act=e._bi;K={h:0,d:0,pc:0,m:0,t:0,b:0};startAct()}
+function refill(){if(MODE!='event')return false;deck=[];for(let s=0;s<4;s++)for(let r=2;r<15;r++)if(!hand.some(h=>h.r==r&&h.s==s))deck.push({r,s});deck.sort(()=>Math.random()-.5);XD++;time=Math.min(99,time+20);dcs=Math.min(dcs+2,MD+3);float(innerWidth/2,innerHeight/2-60,'DECK '+XD,'#f0c040');snd(440,.15,'square',.06,300);return deck.length>0}
+async function xwin(){live=false;await bossDie();for(let i=0;i<5;i++)setTimeout(()=>{const x=Math.random()*innerWidth,y=innerHeight*Math.random()*.6+60;ring(x,y,'#d23c3c');burst(x,y,['#f0c040','#d23c3c','#fff'],50,9)},i*160);
+await sleep(400);[523,659,784,1047].forEach((f,k)=>setTimeout(()=>snd(f,.2,'square',.07),k*110));if(MODE=='spire')spWin();else evWin()}
+function spWin(){const g=6+SP.fl*2;prog.c+=g;SP.earn+=g;prog.sp.b=Math.max(prog.sp.b,SP.fl);save();chk('spire',{fl:SP.fl});
+ov(`<div class="ko" style="font-size:56px">FLOOR ${SP.fl}</div><h1>CLEARED!</h1><div style="color:var(--gold)">${ic('coin',14)} +${g} COINS</div><div>PICK A CHARM TO KEEP</div><div class="row" id="pr"></div><div class="row"><button class="s" id="mm">CASH OUT</button></div>`);D.ov.classList.add('win');confetti();
+[...PK].sort(()=>Math.random()-.5).slice(0,3).forEach(p=>{const d=document.createElement('div');d.className='perk';d.innerHTML=`<div>${ic(p.i,44)}</div><b>${p.n}</b><div style="font-size:8px">${p.x}</div>`;d.onclick=()=>{SP.K[p.k]+=AMT[p.k];SP.fl++;spFloor()};D.pr.append(d)});D.mm.onclick=menu}
+function evWin(){const e=EV,st=prog.ev[e.id]=prog.ev[e.id]||{b:999,cl:{}},got=[];st.b=Math.min(st.b,XD);
+e.tiers.forEach((t,i)=>{if(XD<=t.decks&&!st.cl[i]){st.cl[i]=1;prog.c+=t.coins||0;if(t.skin&&e._sk[t.skin])prog.o[e._sk[t.skin]]=1;got.push(t)}});save();
+ov(`<div class="ko" style="font-size:64px">K.O.</div><h1>${e.boss.name} DOWN!</h1><div>DEFEATED IN ${XD} DECKS</div>${got.length?got.map(t=>`<div style="color:var(--gold)">${t.label}: +${t.coins||0} COINS${t.skin?' + LIMITED SKIN!':''}</div>`).join(''):'<div>NO NEW REWARDS - BEAT YOUR BEST!</div>'}<div class="row"><button id="rt">FIGHT AGAIN</button><button class="s" id="mm">MENU</button></div>`);
+D.ov.classList.add('win');confetti();D.rt.onclick=()=>evGo(e);D.mm.onclick=menu}
+function xlose(why){live=false;busy=true;music(false);ui();shake();snd(220,.7,'sawtooth',.09,-170);noise(.5,.12,400);say('HA HA HA!');
+if(MODE=='spire'){ov(`<h1>${why}</h1><div>YOU REACHED FLOOR ${SP.fl}</div><div>BEST: FLOOR ${prog.sp.b}</div><div style="color:var(--gold)">${ic('coin',14)} ${SP.earn} COINS EARNED</div><div class="row"><button id="rt">NEW CLIMB</button><button class="s" id="mm">MENU</button></div>`);D.rt.onclick=spire}
+else{ov(`<h1>${why}</h1><div>${EV.boss.name} SURVIVES WITH ${Math.max(0,target-score)} HP</div><div>YOU USED ${XD} DECKS</div><div class="row"><button id="rt">TRY AGAIN</button><button class="s" id="mm">MENU</button></div>`);D.rt.onclick=()=>evGo(EV)}
+D.mm.onclick=menu}
+function hub(){const ev=activeEv(),na=Object.keys(prog.a).length,T=[['CAMPAIGN',(prog.u-1)+'/'+ACTS.length+' ACTS CLEARED','hand',0],['THE SPIRE','BEST FLOOR '+prog.sp.b,'flame',3],ev&&['LIMITED EVENT!',ev.name+' - '+fmtT(evLeft(ev)),ev.icon||'skull',4,1,ev.ui?`;--ea:${ev.ui.a};--eb:${ev.ui.b};--ec:${ev.ui.c}`:''],['CARD SHOP','PULL CARD STYLES','coin',2],['TROPHIES',na+'/'+ACH.length+' UNLOCKED','trophy',1],['SAVE DATA','EXPORT / IMPORT / RESET','lock',5]].filter(Boolean);
+D.hub.innerHTML=T.map((t,i)=>`<button class="tile${t[4]?' ev':''}" data-n="${t[3]}" style="--i:${i}${t[5]||''}">${ic(t[2],36)}<b>${t[0]}</b><span>${t[1]}</span></button>`).join('');
+D.hub.querySelectorAll('.tile').forEach(b=>b.onclick=()=>{snd(600,.06,'square',.05);screen(+b.dataset.n)})}
+function screen(n){D.hub.style.display=n<0?'':'none';D.pnl.style.display=n<0?'none':'';D.cont.style.display=n<0?'':'none';[D.grid,D.achv,D.shop,D.spr,D.evp,D.svp].forEach((e,i)=>e.style.display=i==n?'':'none');
+if(n>=0)put(D.mh,['CAMPAIGN - CHOOSE YOUR ACT','TROPHIES - STARS SHOW DIFFICULTY','CARD SHOP - PULL FOR CARD STYLES','THE SPIRE','LIMITED EVENT','SAVE DATA'][n]);
+if(n==2)shopUI();if(n==3)spireUI();if(n==4)evUI()}
+function spireUI(){D.spr.innerHTML=`<div class="sub" style="line-height:2">CLIMB FLOOR AFTER FLOOR - EACH BOSS HAS MORE HP.<br>5 HANDS + 3 DISCARDS PER FLOOR. PICK A CHARM AFTER EVERY WIN AND THEY STACK!<br>EVERY 5TH FLOOR HAS A DEBUFF. THE RUN ENDS WHEN YOU FAIL.</div><div class="row" style="margin:12px 0"><span class="pill">${ic('flame',14)} BEST FLOOR ${prog.sp.b}</span></div><div class="row"><button id="spgo">START CLIMB</button></div>`;D.spgo.onclick=spire}
+function evUI(){const e=activeEv();if(!e){D.evp.innerHTML='<div class="sub">NO EVENT RIGHT NOW. CHECK BACK SOON!</div>';return}
+const st=prog.ev[e.id]||{b:999,cl:{}};D.evp.innerHTML=`<div class="sub" style="color:#ff9a6a">${e.name} - ${fmtT(evLeft(e))}</div><div class="sub" style="line-height:2;margin:8px 0">${e.desc||''}</div><div class="row"><span class="pill">BOSS: ${e.boss.name}</span><span class="pill">${e.boss.hp} HP</span><span class="pill">${ic('skull',12)} ${e.boss.text||''}</span><span class="pill">BEST: ${st.b<999?st.b+' DECKS':'NONE'}</span></div><div class="grid cg" style="grid-template-columns:repeat(${e.tiers.length},minmax(0,1fr));margin:12px 0">${e.tiers.map((t,i)=>`<div class="cs r${Math.min(i+1,3)}" style="--i:${i}"><b>${t.label}</b><br>BEAT IN ${t.decks} DECKS<br>${ic('coin',10)} ${t.coins||0}${t.skin?`<br>${prv(TH.find(x=>x.id==e._sk[t.skin])||TH[0])}LIMITED SKIN`:''}<br>${st.cl[i]?'CLAIMED':'NOT YET'}</div>`).join('')}</div><div class="row"><button id="evgo">FIGHT!</button></div>`;D.evgo.onclick=()=>evGo(e)}
 const sv=(n,s=14)=>[0,1,2].map(i=>ic('star',s,i<n?'#f0c040':'#9aa0ad')).join('');
 const puth=(e,h)=>{if(e._h!==h||(h&&!e.firstChild)){e._h=h;e.innerHTML=h}};
-const pips=(n,m,c)=>Array.from({length:Math.max(m,n)},(_,i)=>`<i class="pip${c}${i<n?'':' off'}"></i>`).join('');
+const pips=(n,m,c)=>m>12?`<b>${n>900?'INF':n}</b>`:Array.from({length:Math.max(m,n)},(_,i)=>`<i class="pip${c}${i<n?'':' off'}"></i>`).join('');
 var MH=0,MD=0;
 function cnt(el,to){const t0=performance.now();(function f(t){const p=Math.min(1,(t-t0)/1200);el.textContent=Math.round(to*p);if(p<1)requestAnimationFrame(f)})(t0)}
 function confetti(){let n=0;const cols=['#f0c040','#d23c3c','#5fd39a','#4aa3ff','#fff'],iv=setInterval(()=>{for(let i=0;i<8&&PT.length<340;i++)PT.push({x:Math.random()*innerWidth,y:-10,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,l:1,d:.006,r:6,c:cols[i%5],g:.05});if(++n>40)clearInterval(iv)},70)}
@@ -283,6 +330,7 @@ ACTS.push({n:'CARD SHARKS',t:3000,h:8,d:3,s:34,x:'Long game. Stay sharp.'},{n:'G
 ACTS.forEach(a=>a.db=+!!(a.ns!==undefined||a.nf||a.tr||a.dm||a.hl||a.nh||a.nb||a.d<3||a.h<4));
 {const tx={'SALOON':'Only 4 hands.','FROZEN VAULT':'Time drains 15% faster.','THE HOUSE':'Clubs dead, -1 mult, slightly faster clock.','DEEP FREEZE':'Time drains 20% faster.','BLOODMOON':'Boss heals 2.5% each hand.','MIDNIGHT':'Spades+faces dead, mild regen.'};
 ACTS.forEach((a,i)=>{a.t=Math.round(a.t*(i<10?.55:.7)/10)*10;a.s+=8;if(i<10)a.h++;if(a.tr)a.tr=1+(a.tr-1)/2;if(a.hl)a.hl/=2;if(a.dm<-1)a.dm++;a.df=Math.min(5,Math.ceil((i+1)/4));if(tx[a.n])a.x=tx[a.n]})}
+ACTS.forEach((a,i)=>{if(i>=4){a.t=Math.round(a.t*(i<10?.7:.6)/10)*10;a.s+=6;if(i<10)a.h++}});
 const BOSS=[['DUSTY DAN','You cant beat me kid.','#c9a05a'],['ALLEY CAT MO','Nine lives kid.','#b0b0c8'],['CAPTAIN BLUFF','All in! Or am I?','#4aa3ff'],['NEON QUEEN','Bow to the glow.','#ff4ad8'],['SHERIFF SNAKE','Slither on home.','#7fd04a'],['THE WHALE','I own this table.','#5aa0e0'],['FROST DEALER','Cold hands. Cold cards.','#9ff0ff'],['PHANTOM ACE','Boo. Fold.','#c8b0ff'],['LUCIFER JACK','Sign here. In blood.','#ff5a3a'],['THE HOUSE','The house always wins.','#f0c040']];
 BOSS.push(['CARD SHARK KIM','Count cards, lose cards.','#ffb84a'],['GOLDEN GIL','Everything shines. Not you.','#ffd84a'],['ICE BARON','Chill out. Forever.','#7fe0ff'],['VAULT WARDEN','No key. No luck.','#a0a0b8'],['THE DUCHESS','Curtsy, peasant.','#ff7ab0'],['BLOOD MOON','I heal. You bleed.','#e04a5a'],['MADAME NOIR','Every wish costs you.','#8a6adf'],['CINDER KING','I burn brighter.','#ff8a3a'],['MIDNIGHT MAN','Clock strikes twelve.','#5a6adf'],['THE DEALER','Cut the deck. Cut your losses.','#e8e8e8']);
 const BM=['0001000,0011100,0111110,1111111,1111111,0001000,0011100','0110110,1111111,1111111,1111111,0111110,0011100,0001000','0001000,0011100,0111110,1111111,0111110,0011100,0001000','0011100,0111110,0011100,1111111,1111111,0001000,0011100'];
@@ -290,7 +338,7 @@ const SPR={};function spr(s,col){const k=s+col;if(!SPR[k]){const c=document.crea
 let deck=[],hand=[],sel=[],act=0,A=ACTS[0],score=0,target=1,hands=0,dcs=0,time=1,maxT=1,heat=0,last=0,busy=true,live=false,K={},CW=100,prog={u:1,s:[]};
 /* save system: one stable key, versioned, sanitised, backed up; reads legacy keys so updates never wipe progress */
 const SK='aceRush.save',OLDK=['aceRushPx'];
-const cleanProg=o=>{const p={v:2,u:1,s:[],a:{},n:{w:0,d:0},c:0,o:{0:1},q:0};if(o&&typeof o=='object'){p.u=Math.max(1,Math.min(+o.u||1,ACTS.length));if(Array.isArray(o.s))p.s=o.s.map(v=>+v||0);if(o.a&&typeof o.a=='object')p.a=o.a;p.c=Math.max(0,+o.c||0);if(o.o&&typeof o.o=='object')p.o=Object.assign({0:1},o.o);p.q=p.o[+o.q]?+o.q:0;if(o.n&&typeof o.n=='object'){p.n.w=+o.n.w||0;p.n.d=+o.n.d||0}}return p};
+const cleanProg=o=>{const p={v:2,u:1,s:[],a:{},n:{w:0,d:0},c:0,o:{0:1},q:0,sp:{b:0},ev:{}};if(o&&typeof o=='object'){p.u=Math.max(1,Math.min(+o.u||1,ACTS.length));if(Array.isArray(o.s))p.s=o.s.map(v=>+v||0);if(o.a&&typeof o.a=='object')p.a=o.a;p.c=Math.max(0,+o.c||0);if(o.sp&&typeof o.sp=='object')p.sp.b=+o.sp.b||0;if(o.ev&&typeof o.ev=='object')p.ev=o.ev;if(o.o&&typeof o.o=='object')p.o=Object.assign({0:1},o.o);p.q=p.o[o.q]?o.q:0;if(o.n&&typeof o.n=='object'){p.n.w=+o.n.w||0;p.n.d=+o.n.d||0}}return p};
 const readSave=()=>{for(const k of [SK,SK+'.bak',...OLDK]){try{const t=localStorage.getItem(k),o=t&&JSON.parse(t);if(o&&typeof o=='object')return o}catch(e){}}return null};
 const save=()=>{try{const t=JSON.stringify(prog);localStorage.setItem(SK,t);localStorage.setItem(SK+'.bak',t)}catch(e){}};
 prog=cleanProg(readSave());save();
@@ -360,7 +408,7 @@ return{k,sc}}
 function layout(){const n=hand.length,W=D.hand.clientWidth,st=Math.min(CW*.88,(W-CW-20)/Math.max(1,n-1)),sc=sel.length?new Set(ev(sel).sc):null;
 hand.forEach((c,i)=>{const m=i-(n-1)/2,e=c.el,s=e.style;s.setProperty('--x',Math.round(m*st)+'px');s.setProperty('--y',Math.round(m*m*2.5)+'px');s.setProperty('--r',m*3+'deg');s.setProperty('--s',1);s.opacity=1;s.zIndex=i;
 e.classList.toggle('sel',sel.includes(c));e.classList.toggle('scr',!!sc&&sc.has(c)&&sel.includes(c))})}
-async function draw(n){for(let i=0;i<n&&deck.length&&hand.length<8;i++){
+async function draw(n){for(let i=0;i<n&&(deck.length||refill())&&hand.length<8;i++){
 const c=deck.pop(),e=c.el=mk(c),s=e.style;s.transition='none';s.setProperty('--x',D.hand.clientWidth/2-CW*.7-10+'px');s.setProperty('--y','0px');s.setProperty('--r','25deg');s.setProperty('--s',.6);s.opacity=0;
 e.onclick=()=>toggle(c);D.hand.append(e);void e.offsetWidth;s.transition='';hand.push(c);snd(500+hand.length*50,.05,'triangle',.05);layout();put(D.dk,'DECK '+deck.length);setTimeout(()=>e.firstChild.classList.remove('b'),250);await sleep(75)}ui()}
 function toggle(c){if(busy)return;const i=sel.indexOf(c);i>=0?(sel.splice(i,1),snd(300,.06,'square',.05)):sel.length<5?(sel.push(c),snd(400+sel.length*90,.08,'square',.06,200)):snd(120,.15,'sawtooth',.05);layout();ui()}
@@ -369,7 +417,7 @@ function sortH(f){if(busy)return;hand.sort(f);layout()}
 /* hud (writes only when changed) */
 function tick(){D.app.classList.toggle('panic',live&&time<10);if(live&&time<10&&Math.ceil(time)!==tick.l){tick.l=Math.ceil(time);snd(880,.08,'square',.05)}D.bsp.classList.toggle('rage',live&&(time<10||score/target>.75));put(D.tt,'TIME '+Math.ceil(Math.max(0,time))+'S');D.tf.style.setProperty('--p',Math.min(1,time/maxT));D.tbar.classList.toggle('low',time<10)}
 function ui(){put(D.an,'ACT '+(act+1));put(D.anm,A.n);put(D.tg,target);D.prog.style.setProperty('--p',Math.min(1,score/target));bossHP();
-puth(D.hs,ic('hand',14)+' HANDS '+pips(hands,MH,''));puth(D.ds,ic('disc',14)+' DISCARDS '+pips(dcs,MD,' g'));D.ht.style.display=heat?'':'none';puth(D.ht,ic('flame',14)+` HEAT ${heat} (+${heat/2} MULT)`);D.app.classList.toggle('hot',heat>0);puth(D.cn,ic('coin',14)+' '+prog.c);tick();
+puth(D.hs,ic('hand',14)+' HANDS '+pips(hands,MH,''));puth(D.ds,ic('disc',14)+' DISCARDS '+pips(dcs,MD,' g'));D.ht.style.display=heat?'':'none';puth(D.ht,ic('flame',14)+` HEAT ${heat} (+${heat/2} MULT)`);D.app.classList.toggle('hot',heat>0);puth(D.cn,ic('coin',14)+' '+prog.c);puth(D.xd,MODE=='event'?`DECK ${XD} - NEXT REWARD: ${(EV.tiers.map(t=>t.decks).filter(d=>d>=XD).sort((a,b)=>a-b)[0])||'NONE'}`:'');tick();
 D.play.disabled=busy||!sel.length;D.dis.disabled=busy||!sel.length||!dcs;put(D.play,'PLAY '+sel.length+'/5 [SPACE]');put(D.dis,'DISCARD [X]');
 if(!busy){if(sel.length){const e=ev(sel);let ch=T[e.k][1]+K.b;e.sc.forEach(c=>ch+=dead(c)?0:val(c.r)+K.pc);D.hname.className='prev';puth(D.calc,`<b id="cc">${ch}</b> x <b id="cm">${Math.max(1,T[e.k][2]+K.m+(A.dm||0))}</b>`);put(D.hname,`${T[e.k][0]}  ~${Math.round(ch*Math.max(1,T[e.k][2]+K.m+(A.dm||0)))}`)}else{D.hname.className='';put(D.hname,'');puth(D.calc,'')}}}
 setInterval(()=>{if(live&&!busy){time-=.2*(A.tr||1);tick();if(time<=0)lose('TIME UP')}},200);
@@ -412,26 +460,25 @@ layout();ui();await sleep(320);await draw(8-hand.length);busy=false;ui()}
 function banner(t){const b=D.banner;b.innerHTML=t;b.classList.remove('go');void b.offsetWidth;b.classList.add('go')}
 function ov(html){const o=D.ov;o.classList.remove('win');o.innerHTML=html;[...o.children].forEach((c,i)=>c.style.setProperty('--n',i));o.classList.add('on')}
 const stars=n=>[0,1,2].map(i=>`<span class="star ${i<n?'on':''}" style="--i:${i}">${ic('star',40)}</span>`).join('');
-function tab(n){[D.grid,D.achv,D.shop].forEach((e,i)=>e.style.display=i==n?'':'none');[D.tp,D.ta,D.tsh].forEach((b,i)=>b.classList.toggle('s',i!=n));put(D.mh,['CHOOSE YOUR ACT','TROPHIES - STARS SHOW DIFFICULTY','CARD SHOP - PULL FOR NEW CARD STYLES'][n]);if(n==2)shopUI()}
-function menu(){live=false;busy=true;music(false);D.ov.classList.remove('on');D.app.style.display='none';D.menu.classList.remove('off');
+function menu(){MODE='camp';live=false;busy=true;music(false);D.ov.classList.remove('on');D.app.style.display='none';D.menu.classList.remove('off');
 const ts=prog.s.reduce((a,b)=>a+(b||0),0),na=Object.keys(prog.a).length;
 D.grid.innerHTML=ACTS.map((a,i)=>i<prog.u?`<div class="act ${i==prog.u-1&&!prog.s[i]?'nx':''}${a.db?' db':''}" data-i="${i}" style="--i:${i%10}">ACT<b>${i+1}</b>${BOSS[i][0]}<br><span class="st">${sv(prog.s[i]||0)}</span><br>DIFF ${dstar(a.df,9)}<br>GOAL ${a.t}<br>${a.h} HANDS${a.db?'<br>'+ic('skull',12)+' DEBUFF':''}</div>`:`<div class="act lock" style="--i:${i%10}">ACT<b>${i+1}</b>LOCKED<br>${ic('lock',26)}<br>${dstar(a.df,9)}</div>`).join('');
 document.querySelectorAll('.act:not(.lock)').forEach(e=>e.onclick=()=>charms(+e.dataset.i));
 D.achv.innerHTML=ACH.map((a,i)=>`<div class="ach${prog.a[a[0]]?' on':''}" style="--i:${i}"><div class="ai">${ic(a[1],30)}</div><div><b>${a[2]}</b><br>${a[3]}<br>${dstar(a[4])}</div></div>`).join('');
 statsUI();
-put(D.tstars,'STARS '+ts+' / '+ACTS.length*3);put(D.cont,'CONTINUE - ACT '+prog.u);D.cont.onclick=()=>charms(prog.u-1);tab(0)}
-function charms(i){act=i;A=ACTS[i];const ps=[...PK].sort(()=>Math.random()-.5).slice(0,3);
+put(D.tstars,'STARS '+ts+' / '+ACTS.length*3);put(D.cont,'CONTINUE - ACT '+prog.u);D.cont.onclick=()=>charms(prog.u-1);hub();screen(-1)}
+function charms(i){MODE='camp';act=i;A=ACTS[i];const ps=[...PK].sort(()=>Math.random()-.5).slice(0,3);
 ov(`<h1>ACT ${i+1}: ${A.n}</h1><div style="color:#ff9a6a">${A.db?ic('skull',14)+' DEBUFF: ':''}${A.x}</div><div>BOSS: ${BOSS[i][0]}</div><div>${A.t} HP IN ${A.h} HANDS</div><div>PICK A CHARM (OR JUST START)</div><div class="row" id="pr"></div><div class="row"><button id="go2">START ACT</button><button class="s" id="bk">BACK</button></div>`);
 ps.forEach(p=>{const d=document.createElement('div');d.className='perk';d.innerHTML=`<div>${ic(p.i,44)}</div><b>${p.n}</b><div style="font-size:8px">${p.x}</div>`;d.onclick=()=>{K={h:0,d:0,pc:0,m:0,t:0,b:0};K[p.k]=AMT[p.k];startAct()};D.pr.append(d)});D.go2.onclick=()=>{K={h:0,d:0,pc:0,m:0,t:0,b:0};startAct()};D.bk.onclick=()=>D.ov.classList.remove('on')}
 async function startAct(){D.ov.classList.remove('on');D.menu.classList.add('off');D.app.style.display='flex';upCW();busy=true;live=false;target=A.t;score=0;hands=A.h+K.h;dcs=A.d+K.d;MH=hands;MD=dcs;maxT=A.s+K.t;time=maxT;heat=0;last=0;
 deck=[];for(let s=0;s<4;s++)for(let r=2;r<15;r++)deck.push({r,s});deck.sort(()=>Math.random()-.5);hand=[];sel=[];[...D.hand.querySelectorAll('.card')].forEach(c=>c.remove());
-bossArt(act);D.bsp.className='';put(D.bn,BOSS[act][0]);put(D.hname,'');D.calc.textContent='';put(D.tot,'');put(D.sc,0);puth(D.modl,(A.db?ic('skull',12)+' DEBUFF: ':'')+A.x.toUpperCase());put(D.dk,'DECK 52');ui();banner(`ACT ${act+1}<br>${BOSS[act][0]}`);D.bsp.animate([{transform:'translateY(-320px) scale(.2) rotate(360deg)',opacity:0},{transform:'none',opacity:1}],{duration:900,easing:'cubic-bezier(.34,1.7,.5,1)'});snd(150,.5,'sawtooth',.08,300);await sleep(1000);say(BOSS[act][1]);await draw(8);busy=false;live=true;music(true);ui()}
-async function win(){live=false;await bossDie();const st=1+(hands>0?1:0)+(time>=15?1:0);prog.s[act]=Math.max(prog.s[act]||0,st);prog.u=Math.max(prog.u,Math.min(ACTS.length,act+2));prog.n.w++;if(A.db)prog.n.d++;cg=12+act*4+st*8+(A.db?10:0);prog.c+=cg;save();chk('win',{act,st,hands,time,score,tg:target,tot:prog.s.reduce((a,b)=>a+(b||0),0),K,n:prog.n,left:MH-hands});
+bossArt(act);D.bsp.className='';put(D.bn,BOSS[act][0]);put(D.hname,'');D.calc.textContent='';put(D.tot,'');put(D.sc,0);puth(D.modl,(A.db?ic('skull',12)+' DEBUFF: ':'')+A.x.toUpperCase());put(D.dk,'DECK 52');ui();banner(`${MODE=='camp'?'ACT '+(act+1):A.n}<br>${BOSS[act][0]}`);D.bsp.animate([{transform:'translateY(-320px) scale(.2) rotate(360deg)',opacity:0},{transform:'none',opacity:1}],{duration:900,easing:'cubic-bezier(.34,1.7,.5,1)'});snd(150,.5,'sawtooth',.08,300);await sleep(1000);say(BOSS[act][1]);await draw(8);busy=false;live=true;music(true);ui()}
+async function win(){if(MODE!='camp')return xwin();live=false;await bossDie();const st=1+(hands>0?1:0)+(time>=15?1:0);prog.s[act]=Math.max(prog.s[act]||0,st);prog.u=Math.max(prog.u,Math.min(ACTS.length,act+2));prog.n.w++;if(A.db)prog.n.d++;cg=12+act*4+st*8+(A.db?10:0);prog.c+=cg;save();chk('win',{act,st,hands,time,score,tg:target,tot:prog.s.reduce((a,b)=>a+(b||0),0),K,n:prog.n,left:MH-hands});
 for(let i=0;i<7;i++)setTimeout(()=>{const x=Math.random()*innerWidth,y=innerHeight*Math.random()*.6+60;ring(x,y,'#d23c3c');burst(x,y,['#f0c040','#d23c3c','#fff'],60,10)},i*170);
 await sleep(500);[523,659,784,1047,1319].forEach((f,k)=>setTimeout(()=>snd(f,.2,'square',.07),k*110));ov(`<div class="ko">K.O.</div><h1>${act==19?'YOU BEAT THE DEALER!':'BOSS DEFEATED!'}</h1><div class="strike">${BOSS[act][0]}</div><div>${stars(st)}</div><div><span id="fs" class="fsc">0</span> POINTS<br><span style="font-size:8px">${ic('star',10)} CLEAR  ${ic('star',10)} HANDS LEFT  ${ic('star',10)} 15S LEFT</span></div><div style="color:var(--gold)">${ic('coin',14)} +${cg} COINS</div><div class="row">${act<19?'<button id="nx">NEXT ACT</button>':''}<button class="s" id="rt">RETRY</button><button class="s" id="mm">MENU</button></div>`);
 D.ov.classList.add('win');cnt(D.fs,score);confetti();for(let i=0;i<st;i++)setTimeout(()=>burst(innerWidth/2+(i-1)*44,innerHeight/2-40,['#f0c040','#fff'],25,8),700+i*300);
 if(act<19)D.nx.onclick=()=>charms(act+1);D.rt.onclick=()=>charms(act);D.mm.onclick=menu}
-function lose(why){live=false;busy=true;music(false);ui();shake();snd(220,.7,'sawtooth',.09,-170);noise(.5,.12,400);say('HA HA HA!');ov(`<h1>${why}</h1><div>SCORE ${score} / ${target}</div><div class="row"><button id="rt">RETRY</button><button class="s" id="mm">MENU</button></div>`);D.rt.onclick=()=>charms(act);D.mm.onclick=menu}
+function lose(why){if(MODE!='camp')return xlose(why);live=false;busy=true;music(false);ui();shake();snd(220,.7,'sawtooth',.09,-170);noise(.5,.12,400);say('HA HA HA!');ov(`<h1>${why}</h1><div>SCORE ${score} / ${target}</div><div class="row"><button id="rt">RETRY</button><button class="s" id="mm">MENU</button></div>`);D.rt.onclick=()=>charms(act);D.mm.onclick=menu}
 
 D.play.onclick=play;D.dis.onclick=discard;D.mn.onclick=menu;
 D.sr.onclick=()=>sortH((a,b)=>b.r-a.r||a.s-b.s);D.ss.onclick=()=>sortH((a,b)=>a.s-b.s||b.r-a.r);
@@ -451,10 +498,10 @@ addEventListener('resize',()=>{size();upCW();layout()});
 addEventListener('keydown',e=>{if(e.key==' '&&!/TEXTAREA|INPUT/.test(e.target.tagName))e.preventDefault();if(busy)return;if(e.key==' '||e.key=='Enter'){if(document.activeElement)document.activeElement.blur();play()}else if(e.key=='x'||e.key=='X'||e.key=='d'||e.key=='D')discard();else if(e.key>='1'&&e.key<='8'&&hand[e.key-1])toggle(hand[e.key-1])});
 D.title.innerHTML=[...'ACE RUSH'].map((c,i)=>`<span style="--i:${i}">${c==' '?'&nbsp;':c}</span>`).join('');
 for(let i=0;i<10;i++){const f=document.createElement('i');f.className='fs';f.style.cssText=`left:${(i*83)%96}%;top:${(i*37)%88}%;animation-delay:-${i*.4}s;background-image:${spr(i%4,i%4==1||i%4==2?'#d23c3c':'#0b1f17')}`;D.menu.append(f)}
-D.tp.onclick=()=>tab(0);D.tsh.onclick=()=>tab(2);D.ta.onclick=()=>tab(1);D.suits.innerHTML=[0,1,2,3].map(i=>`<i class="hsu" style="--i:${i};background-image:${spr(i,i==1||i==2?'#d23c3c':'#f4ecd2')}"></i>`).join('');
+D.mb.onclick=()=>screen(-1);addEventListener('keydown',e=>{if(e.key=='Escape'&&!D.menu.classList.contains('off')&&D.pnl.style.display!='none')screen(-1)});D.suits.innerHTML=[0,1,2,3].map(i=>`<i class="hsu" style="--i:${i};background-image:${spr(i,i==1||i==2?'#d23c3c':'#f4ecd2')}"></i>`).join('');
 applyTheme();
 D.menu.insertAdjacentHTML('afterbegin',[...Array(9)].map((_,i)=>`<i class="fcard" style="--x:${i*11+2};--d:${14+i%4*4};--r:${i*37%60-30}deg;animation-delay:-${i*2.3}s"></i>`).join(''));
-{const cn=document.createElement('span');cn.id='cn';cn.className=D.ds.className;D.ds.after(cn)}
+{const cn=document.createElement('span');cn.id='cn';cn.className=D.ds.className;D.ds.after(cn);const xd=document.createElement('span');xd.id='xd';xd.className=D.ds.className;cn.after(xd)}
 setInterval(()=>{D.tip.textContent='TIP: '+TIPS[TI++%TIPS.length];D.tip.animate([{opacity:0},{opacity:1}],400)},4000);D.tip.textContent='TIP: '+TIPS[0];
 const setMt=()=>put(D.mt,MUTE?'MUTED':'SOUND ON');setMt();
 D.mt.onclick=()=>{MUTE=!MUTE;try{localStorage.setItem('arMute',MUTE?'1':'0')}catch(e){}setMt();snd(600,.1)};
@@ -465,7 +512,8 @@ D.stitle.innerHTML=D.title.innerHTML;
 function begin(){if(D.start.classList.contains('off'))return;try{initAC()}catch(e){}snd(520,.07,'square',.05,150);D.start.classList.add('off');menu()}
 D.go.onclick=begin;addEventListener('click',e=>{const b=e.target.closest('button');if(b)b.blur()});
 addEventListener('keydown',e=>{if((e.key=='Enter'||e.key==' ')&&!D.start.classList.contains('off')){e.preventDefault();begin()}});
-size();upCW();K={h:0,d:0,pc:0,m:0,t:0,b:0};menu();
+size();upCW();K={h:0,d:0,pc:0,m:0,t:0,b:0};menu();window._arReady=1;
 </script>
+<script src="event.js" onerror="console.info('Ace Rush: no event.js found (no event running)')"></script>
 </body>
 </html>
