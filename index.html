@@ -271,7 +271,7 @@ RAR.push('LIMITED');RC.push('#ff5a8a');
 const tk=i=>TH[i].id||i;
 const AceRush=window.AceRush=window.AceRush||{};AceRush.events=[];
 AceRush.achievement=(id,icon,name,desc,stars,ev,fn)=>ACH.push([id,icon,name,desc,stars,ev,fn]);
-AceRush.event=e=>{try{if(!e||!e.id||!e.boss||!e.tiers)throw 'event needs id, boss, tiers';e.skins=e.skins||[];e._sk={};e.skins.forEach(k=>{const id='ev:'+e.id+':'+k.id;e._sk[k.id]=id;TH.push({...k,id,z:4,lim:1})});e._bi=BOSS.push([e.boss.name,e.boss.quote||'',e.boss.color||'#b0102a'])-1;AceRush.events.push(e);if(window._arReady)menu()}catch(x){console.warn('Ace Rush event error:',x)}};
+AceRush.event=e=>{try{if(!e||!e.id||!e.boss||!e.tiers)throw 'event needs id, boss, tiers';e.skins=e.skins||[];e._sk={};e.skins.forEach(k=>{const id='ev:'+e.id+':'+k.id;e._sk[k.id]=id;const x=TH.find(t=>t.id==id);if(x)Object.assign(x,k,{id,z:4,lim:1});else TH.push({...k,id,z:4,lim:1});if(window._arReady&&prog.o[id]){prog.sk[id]={...TH.find(t=>t.id==id)};save()}});e._bi=BOSS.push([e.boss.name,e.boss.quote||'',e.boss.color||'#b0102a'])-1;AceRush.events.push(e);if(window._arReady)menu()}catch(x){console.warn('Ace Rush event error:',x)}};
 const evLeft=e=>(e.end?Date.parse(e.end):Infinity)-Date.now();
 const activeEv=()=>AceRush.events.find(e=>Date.now()>=(e.start?Date.parse(e.start):0)&&evLeft(e)>0)||null;
 const fmtT=ms=>{if(ms==Infinity)return'NO END DATE';const d=Math.floor(ms/864e5),h=Math.floor(ms/36e5)%24,m=Math.floor(ms/6e4)%60;return d>0?d+'D '+h+'H LEFT':h+'H '+m+'M LEFT'};
@@ -289,7 +289,7 @@ function spWin(){const g=6+SP.fl*2;prog.c+=g;SP.earn+=g;prog.sp.b=Math.max(prog.
 ov(`<div class="ko" style="font-size:56px">FLOOR ${SP.fl}</div><h1>CLEARED!</h1><div style="color:var(--gold)">${ic('coin',14)} +${g} COINS</div><div>PICK A CHARM TO KEEP</div><div class="row" id="pr"></div><div class="row"><button class="s" id="mm">CASH OUT</button></div>`);D.ov.classList.add('win');confetti();
 [...PK].sort(()=>Math.random()-.5).slice(0,3).forEach(p=>{const d=document.createElement('div');d.className='perk';d.innerHTML=`<div>${ic(p.i,44)}</div><b>${p.n}</b><div style="font-size:8px">${p.x}</div>`;d.onclick=()=>{SP.K[p.k]+=AMT[p.k];SP.fl++;spFloor()};D.pr.append(d)});D.mm.onclick=menu}
 function evWin(){const e=EV,st=prog.ev[e.id]=prog.ev[e.id]||{b:999,cl:{}},got=[];st.b=Math.min(st.b,XD);
-e.tiers.forEach((t,i)=>{if(XD<=t.decks&&!st.cl[i]){st.cl[i]=1;prog.c+=t.coins||0;if(t.skin&&e._sk[t.skin])prog.o[e._sk[t.skin]]=1;got.push(t)}});save();
+e.tiers.forEach((t,i)=>{if(XD<=t.decks&&!st.cl[i]){st.cl[i]=1;prog.c+=t.coins||0;if(t.skin&&e._sk[t.skin]){const id=e._sk[t.skin];prog.o[id]=1;prog.sk[id]={...TH.find(x=>x.id==id)}}got.push(t)}});save();
 ov(`<div class="ko" style="font-size:64px">K.O.</div><h1>${e.boss.name} DOWN!</h1><div>DEFEATED IN ${XD} DECKS</div>${got.length?got.map(t=>`<div style="color:var(--gold)">${t.label}: +${t.coins||0} COINS${t.skin?' + LIMITED SKIN!':''}</div>`).join(''):'<div>NO NEW REWARDS - BEAT YOUR BEST!</div>'}<div class="row"><button id="rt">FIGHT AGAIN</button><button class="s" id="mm">MENU</button></div>`);
 D.ov.classList.add('win');confetti();D.rt.onclick=()=>evGo(e);D.mm.onclick=menu}
 function xlose(why){live=false;busy=true;music(false);ui();shake();snd(220,.7,'sawtooth',.09,-170);noise(.5,.12,400);say('HA HA HA!');
@@ -338,10 +338,10 @@ const SPR={};function spr(s,col){const k=s+col;if(!SPR[k]){const c=document.crea
 let deck=[],hand=[],sel=[],act=0,A=ACTS[0],score=0,target=1,hands=0,dcs=0,time=1,maxT=1,heat=0,last=0,busy=true,live=false,K={},CW=100,prog={u:1,s:[]};
 /* save system: one stable key, versioned, sanitised, backed up; reads legacy keys so updates never wipe progress */
 const SK='aceRush.save',OLDK=['aceRushPx'];
-const cleanProg=o=>{const p={v:2,u:1,s:[],a:{},n:{w:0,d:0},c:0,o:{0:1},q:0,sp:{b:0},ev:{}};if(o&&typeof o=='object'){p.u=Math.max(1,Math.min(+o.u||1,ACTS.length));if(Array.isArray(o.s))p.s=o.s.map(v=>+v||0);if(o.a&&typeof o.a=='object')p.a=o.a;p.c=Math.max(0,+o.c||0);if(o.sp&&typeof o.sp=='object')p.sp.b=+o.sp.b||0;if(o.ev&&typeof o.ev=='object')p.ev=o.ev;if(o.o&&typeof o.o=='object')p.o=Object.assign({0:1},o.o);p.q=p.o[o.q]?o.q:0;if(o.n&&typeof o.n=='object'){p.n.w=+o.n.w||0;p.n.d=+o.n.d||0}}return p};
+const cleanProg=o=>{const p={v:2,u:1,s:[],a:{},n:{w:0,d:0},c:0,o:{0:1},q:0,sp:{b:0},ev:{},sk:{}};if(o&&typeof o=='object'){p.u=Math.max(1,Math.min(+o.u||1,ACTS.length));if(Array.isArray(o.s))p.s=o.s.map(v=>+v||0);if(o.a&&typeof o.a=='object')p.a=o.a;p.c=Math.max(0,+o.c||0);if(o.sp&&typeof o.sp=='object')p.sp.b=+o.sp.b||0;if(o.ev&&typeof o.ev=='object')p.ev=o.ev;if(o.sk&&typeof o.sk=='object')p.sk=o.sk;if(o.o&&typeof o.o=='object')p.o=Object.assign({0:1},o.o);p.q=p.o[o.q]?o.q:0;if(o.n&&typeof o.n=='object'){p.n.w=+o.n.w||0;p.n.d=+o.n.d||0}}return p};
 const readSave=()=>{for(const k of [SK,SK+'.bak',...OLDK]){try{const t=localStorage.getItem(k),o=t&&JSON.parse(t);if(o&&typeof o=='object')return o}catch(e){}}return null};
 const save=()=>{try{const t=JSON.stringify(prog);localStorage.setItem(SK,t);localStorage.setItem(SK+'.bak',t)}catch(e){}};
-prog=cleanProg(readSave());save();
+prog=cleanProg(readSave());Object.values(prog.sk).forEach(k=>{if(k&&k.id&&!TH.some(t=>t.id==k.id))TH.push({...k,z:4,lim:1})});save();
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 const upCW=()=>CW=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cw'))||100;
 
